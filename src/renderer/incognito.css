@@ -1,0 +1,122 @@
+/* Incognito Mode Styles */
+
+body.incognito {
+    --incognito-primary: #4a3a6b;
+    --incognito-secondary: #2d2440;
+    --incognito-accent: #9b7ed9;
+    --incognito-dark: #1a1525;
+}
+
+body.incognito #tab-bar {
+    background: var(--incognito-dark);
+    border-bottom-color: var(--incognito-primary);
+}
+
+body.incognito .tab {
+    background: var(--incognito-secondary);
+    border-color: var(--incognito-primary);
+}
+
+body.incognito .tab:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito .tab.active {
+    background: var(--incognito-primary);
+    border-bottom-color: var(--incognito-accent);
+}
+
+body.incognito #toolbar {
+    background: var(--incognito-dark);
+    border-bottom-color: var(--incognito-primary);
+}
+
+body.incognito #address-bar {
+    background: var(--incognito-secondary);
+    border-color: var(--incognito-primary);
+}
+
+body.incognito #address-bar:focus {
+    border-color: var(--incognito-accent);
+    box-shadow: 0 0 0 2px rgba(155, 126, 217, 0.2);
+}
+
+body.incognito #nav-buttons button:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito #menu-btn:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito #menu-dropdown {
+    background: var(--incognito-secondary);
+    border-color: var(--incognito-primary);
+}
+
+body.incognito .menu-item:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito #new-tab-btn:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito #find-bar {
+    background: var(--incognito-secondary);
+    border-color: var(--incognito-primary);
+}
+
+body.incognito #find-input {
+    background: var(--incognito-dark);
+    border-color: var(--incognito-primary);
+}
+
+body.incognito #find-input:focus {
+    border-color: var(--incognito-accent);
+}
+
+body.incognito #find-bar button:hover {
+    background: var(--incognito-primary);
+}
+
+/* HTTPS Indicator for incognito */
+body.incognito .https-indicator:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito .https-tooltip {
+    background: var(--incognito-secondary);
+    border-color: var(--incognito-primary);
+}
+
+body.incognito .https-tooltip-url {
+    background: var(--incognito-dark);
+}
+
+/* Incognito indicator */
+#incognito-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    color: var(--incognito-accent);
+    background: var(--incognito-secondary);
+    border-radius: 6px;
+    -webkit-app-region: no-drag;
+}
+
+#incognito-indicator svg {
+    opacity: 0.9;
+}
+
+/* Window controls in incognito */
+body.incognito #window-controls button:hover {
+    background: var(--incognito-primary);
+}
+
+body.incognito #close-btn:hover {
+    background: #c42b1c;
+}

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab - Aegis Browser</title>
+    <link rel="stylesheet" href="newtab.css">
+</head>
+
+<body>
+    <div id="homepage">
+        <!-- Settings Toggle -->
+        <button id="settings-toggle" class="settings-toggle" title="Customize Homepage">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+        </button>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <!-- Greeting -->
+            <div id="greeting-widget" class="widget greeting-widget">
+                <h1 id="greeting-text">Good morning</h1>
+                <p id="greeting-subtitle">What would you like to accomplish today?</p>
+            </div>
+
+            <!-- Clock Widget -->
+            <div id="clock-widget" class="widget clock-widget" data-widget="clock">
+                <div class="clock-time" id="clock-time">12:00</div>
+                <div class="clock-date" id="clock-date">Saturday, January 25</div>
+            </div>
+
+            <!-- Search Widget -->
+            <div id="search-widget" class="widget search-widget" data-widget="search">
+                <div class="search-container">
+                    <div class="search-engine-icon" id="search-engine-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search the web..."
+                        autocomplete="off">
+                    <select id="search-engine-select" class="search-engine-select">
+                        <option value="google">Google</option>
+                        <option value="bing">Bing</option>
+                        <option value="duckduckgo">DuckDuckGo</option>
+                        <option value="brave">Brave</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quick Links Widget -->
+            <div id="quicklinks-widget" class="widget quicklinks-widget" data-widget="quicklinks">
+                <div class="widget-header">
+                    <h3>Quick Links</h3>
+                    <button class="add-link-btn" id="add-link-btn" title="Add Link">+</button>
+                </div>
+                <div class="quicklinks-grid" id="quicklinks-grid">
+                    <!-- Links will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Bottom Widgets Row -->
+            <div class="bottom-widgets">
+                <!-- Todo Widget -->
+                <div id="todo-widget" class="widget todo-widget" data-widget="todo">
+                    <div class="widget-header">
+                        <h3>📋 Tasks</h3>
+                        <span class="task-count" id="task-count">0</span>
+                    </div>
+                    <div class="todo-input-container">
+                        <input type="text" id="todo-input" class="todo-input" placeholder="Add a task...">
+                        <select id="todo-priority" class="todo-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <ul class="todo-list" id="todo-list">
+                        <!-- Tasks will be added dynamically -->
+                    </ul>
+                </div>
+
+                <!-- Notes Widget -->
+                <div id="notes-widget" class="widget notes-widget" data-widget="notes">
+                    <div class="widget-header">
+                        <h3>📝 Notes</h3>
+                        <button class="notes-preview-btn" id="notes-preview-btn" title="Toggle Preview">👁</button>
+                    </div>
+                    <textarea id="notes-textarea" class="notes-textarea"
+                        placeholder="Write your notes here... (Markdown supported)"></textarea>
+                    <div id="notes-preview" class="notes-preview hidden"></div>
+                </div>
+
+                <!-- Focus Timer Widget -->
+                <div id="focus-widget" class="widget focus-widget" data-widget="focus">
+                    <div class="widget-header">
+                        <h3>🎯 Focus Timer</h3>
+                    </div>
+                    <div class="focus-display">
+                        <div class="focus-time" id="focus-time">25:00</div>
+                        <div class="focus-label" id="focus-label">Focus Session</div>
+                    </div>
+                    <div class="focus-controls">
+                        <button class="focus-btn" id="focus-start">▶ Start</button>
+                        <button class="focus-btn" id="focus-reset">↺ Reset</button>
+                    </div>
+                    <div class="focus-stats">
+                        <span>Sessions today: <strong id="focus-sessions">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Settings Panel -->
+        <aside id="settings-panel" class="settings-panel hidden">
+            <div class="settings-header">
+                <h2>Customize</h2>
+                <button id="settings-close" class="settings-close">×</button>
+            </div>
+            <div class="settings-content">
+                <!-- Theme Section -->
+                <div class="settings-section">
+                    <h4>Theme</h4>
+                    <div class="theme-options">
+                        <button class="theme-btn" data-theme="dark">🌙 Dark</button>
+                        <button class="theme-btn" data-theme="light">☀️ Light</button>
+                        <button class="theme-btn" data-theme="auto">🔄 Auto</button>
+                    </div>
+                </div>
+
+                <!-- Accent Color -->
+                <div class="settings-section">
+                    <h4>Accent Color</h4>
+                    <div class="color-options">
+                        <button class="color-btn" data-color="#4a9eff" style="background:#4a9eff"></button>
+                        <button class="color-btn" data-color="#10b981" style="background:#10b981"></button>
+                        <button class="color-btn" data-color="#f59e0b" style="background:#f59e0b"></button>
+                        <button class="color-btn" data-color="#ef4444" style="background:#ef4444"></button>
+                        <button class="color-btn" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                        <button class="color-btn" data-color="#ec4899" style="background:#ec4899"></button>
+                    </div>
+                </div>
+
+                <!-- Background -->
+                <div class="settings-section">
+                    <h4>Background</h4>
+                    <select id="bg-type" class="settings-select">
+                        <option value="gradient">Gradient</option>
+                        <option value="solid">Solid Color</option>
+                        <option value="image">Image URL</option>
+                    </select>
+                    <div id="bg-solid-options" class="bg-options hidden">
+                        <input type="color" id="bg-color-picker" class="bg-color-picker" value="#1a1a2e">
+                        <div class="bg-color-presets">
+                            <button class="bg-preset" data-color="#0f0f1a" style="background:#0f0f1a"></button>
+                            <button class="bg-preset" data-color="#1a1a2e" style="background:#1a1a2e"></button>
+                            <button class="bg-preset" data-color="#1e3a5f" style="background:#1e3a5f"></button>
+                            <button class="bg-preset" data-color="#2d1b4e" style="background:#2d1b4e"></button>
+                            <button class="bg-preset" data-color="#1a2e1a" style="background:#1a2e1a"></button>
+                            <button class="bg-preset" data-color="#3d1f1f" style="background:#3d1f1f"></button>
+                            <button class="bg-preset" data-color="#f0f2f5" style="background:#f0f2f5"></button>
+                            <button class="bg-preset" data-color="#e8eaed" style="background:#e8eaed"></button>
+                        </div>
+                    </div>
+                    <input type="text" id="bg-value" class="settings-input"
+                        placeholder="Enter gradient or image URL...">
+                </div>
+
+                <!-- Clock Settings -->
+                <div class="settings-section">
+                    <h4>Clock</h4>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="clock-24h">
+                        <span>24-hour format</span>
+                    </label>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="clock-seconds">
+                        <span>Show seconds</span>
+                    </label>
+                </div>
+
+                <!-- Widget Visibility -->
+                <div class="settings-section">
+                    <h4>Widgets</h4>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="widget-clock" checked>
+                        <span>Clock</span>
+                    </label>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="widget-search" checked>
+                        <span>Search</span>
+                    </label>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="widget-quicklinks" checked>
+                        <span>Quick Links</span>
+                    </label>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="widget-todo" checked>
+                        <span>Tasks</span>
+                    </label>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="widget-notes" checked>
+                        <span>Notes</span>
+                    </label>
+                    <label class="settings-toggle-label">
+                        <input type="checkbox" id="widget-focus" checked>
+                        <span>Focus Timer</span>
+                    </label>
+                </div>
+
+                <!-- Data Management -->
+                <div class="settings-section">
+                    <h4>Data</h4>
+                    <button class="settings-btn" id="export-data">📤 Export Config</button>
+                    <button class="settings-btn" id="import-data">📥 Import Config</button>
+                    <input type="file" id="import-file" accept=".json" style="display:none">
+                </div>
+            </div>
+        </aside>
+
+        <!-- Add Link Modal -->
+        <div id="add-link-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Add Quick Link</h3>
+                <input type="text" id="link-title" class="modal-input" placeholder="Title">
+                <input type="url" id="link-url" class="modal-input" placeholder="URL (https://...)">
+                <div class="modal-actions">
+                    <button class="modal-btn cancel" id="link-cancel">Cancel</button>
+                    <button class="modal-btn confirm" id="link-save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="newtab-app.js"></script>
+</body>
+
+</html>

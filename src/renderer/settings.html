@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+    <title>Settings - Aegis Browser</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+
+<body>
+    <!-- Draggable Titlebar -->
+    <div id="settings-titlebar"
+        style="-webkit-app-region: drag; height: 32px; background: #151a2e; width: 100vw; position: fixed; top: 0; left: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;">
+        <span style="margin-left: 16px; color: #e4e4e7; font-size: 15px; font-weight: 500;">Aegis Browser
+            Settings</span>
+        <div class="window-controls" style="-webkit-app-region: no-drag; display: flex; height: 100%;">
+            <button id="minimize-btn" class="control-btn"
+                style="background: transparent; border: none; color: #e4e4e7; width: 46px; height: 100%; display: flex; align-items: center; justify-content: center; cursor: default; font-family: 'Segoe UI', sans-serif; font-size: 10px;">&#xE921;</button>
+            <button id="close-btn" class="control-btn close"
+                style="background: transparent; border: none; color: #e4e4e7; width: 46px; height: 100%; display: flex; align-items: center; justify-content: center; cursor: default; font-family: 'Segoe UI', sans-serif; font-size: 10px;">&#xE8BB;</button>
+        </div>
+    </div>
+    <div style="height: 32px;"></div> <!-- Spacer for titlebar -->
+
+    <div class="settings-container">
+        <!-- Sidebar Navigation -->
+        <aside class="settings-sidebar">
+            <div class="settings-header">
+                <div class="settings-logo">⚙️</div>
+                <h1>Settings</h1>
+            </div>
+            <nav class="settings-nav">
+                <button class="nav-item active" data-section="general">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">General</span>
+                </button>
+                <button class="nav-item" data-section="appearance">
+                    <span class="nav-icon">🎨</span>
+                    <span class="nav-text">Appearance</span>
+                </button>
+                <button class="nav-item" data-section="privacy">
+                    <span class="nav-icon">🔒</span>
+                    <span class="nav-text">Privacy & Security</span>
+                </button>
+                <button class="nav-item" data-section="downloads">
+                    <span class="nav-icon">📥</span>
+                    <span class="nav-text">Downloads</span>
+                </button>
+                <button class="nav-item" data-section="search">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-text">Search Engine</span>
+                </button>
+                <button class="nav-item" data-section="shortcuts">
+                    <span class="nav-icon">⌨️</span>
+                    <span class="nav-text">Keyboard Shortcuts</span>
+                </button>
+                <button class="nav-item" data-section="about">
+                    <span class="nav-icon">ℹ️</span>
+                    <span class="nav-text">About</span>
+                </button>
+            </nav>
+            <div class="settings-footer">
+                <button id="close-settings" class="close-btn">← Back to Browser</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="settings-content">
+            <!-- General Section -->
+            <section id="section-general" class="settings-section active">
+                <h2>General</h2>
+
+                <div class="setting-group">
+                    <h3>Startup</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>On startup</label>
+                            <p class="setting-description">Choose what to show when Aegis Browser starts</p>
+                        </div>
+                        <select id="startup-behavior">
+                            <option value="homepage">Open homepage</option>
+                            <option value="restore">Restore previous session</option>
+                            <option value="blank">Open new tab</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Homepage</label>
+                            <p class="setting-description">The page that opens when you click Home</p>
+                        </div>
+                        <input type="text" id="homepage-url" placeholder="https://www.google.com">
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>New tab page</label>
+                            <p class="setting-description">URL to open for new tabs</p>
+                        </div>
+                        <input type="text" id="newtab-url" placeholder="https://www.google.com">
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Tabs</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Confirm before closing multiple tabs</label>
+                            <p class="setting-description">Show a warning when closing browser with multiple tabs</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="confirm-close-tabs" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Open links in new tab</label>
+                            <p class="setting-description">Open external links in a new tab by default</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="open-links-new-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Tab suspension timeout (minutes)</label>
+                            <p class="setting-description">Suspend inactive tabs to save memory (0 to disable)</p>
+                        </div>
+                        <input type="number" id="tab-suspension-timeout" min="0" max="120" value="30">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Appearance Section -->
+            <section id="section-appearance" class="settings-section">
+                <h2>Appearance</h2>
+
+                <div class="setting-group">
+                    <h3>Theme</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Color theme</label>
+                            <p class="setting-description">Choose your preferred color scheme</p>
+                        </div>
+                        <select id="theme">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="system">System default</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Accent color</label>
+                            <p class="setting-description">Primary accent color for the browser</p>
+                        </div>
+                        <input type="color" id="accent-color" value="#4a9eff">
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Interface</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Show bookmarks bar</label>
+                            <p class="setting-description">Display the bookmarks bar below the address bar</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="show-bookmarks-bar">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Compact mode</label>
+                            <p class="setting-description">Use smaller tabs and toolbar</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="compact-mode">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Font size</label>
+                            <p class="setting-description">Default font size for web pages</p>
+                        </div>
+                        <select id="font-size">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                            <option value="x-large">Extra Large</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Default zoom level</label>
+                            <p class="setting-description">Default page zoom for all websites</p>
+                        </div>
+                        <select id="default-zoom">
+                            <option value="0.75">75%</option>
+                            <option value="0.9">90%</option>
+                            <option value="1" selected>100%</option>
+                            <option value="1.1">110%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Privacy Section -->
+            <section id="section-privacy" class="settings-section">
+                <h2>Privacy & Security</h2>
+
+                <div class="setting-group">
+                    <h3>Ad Blocking</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Enable ad blocker</label>
+                            <p class="setting-description">Block advertisements and trackers</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="adblock-enabled" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Block tracking scripts</label>
+                            <p class="setting-description">Block known tracking and analytics scripts</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="block-trackers" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Anti-Fingerprinting</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Enable anti-fingerprinting</label>
+                            <p class="setting-description">Protect against browser fingerprinting techniques</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="anti-fingerprinting" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Fingerprinting protection level</label>
+                            <p class="setting-description">Higher levels may break some websites</p>
+                        </div>
+                        <select id="fingerprint-level">
+                            <option value="standard">Standard</option>
+                            <option value="strict">Strict</option>
+                            <option value="aggressive">Aggressive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Privacy</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Send Do Not Track requests</label>
+                            <p class="setting-description">Request websites not to track you</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="do-not-track" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Block third-party cookies</label>
+                            <p class="setting-description">Prevent cross-site tracking via cookies</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="block-third-party-cookies" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Clear browsing data on exit</label>
+                            <p class="setting-description">Automatically clear history, cookies, and cache when closing
+                            </p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="clear-on-exit">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Clear Data</h3>
+                    <div class="setting-item action-item">
+                        <div class="setting-info">
+                            <label>Clear browsing data now</label>
+                            <p class="setting-description">Clear history, cookies, cache, and other browsing data</p>
+                        </div>
+                        <button id="clear-data-btn" class="action-btn">Clear Data...</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Downloads Section -->
+            <section id="section-downloads" class="settings-section">
+                <h2>Downloads</h2>
+
+                <div class="setting-group">
+                    <h3>Download Location</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Download folder</label>
+                            <p class="setting-description">Where to save downloaded files</p>
+                        </div>
+                        <div class="path-input">
+                            <input type="text" id="download-path" readonly>
+                            <button id="browse-download-path" class="browse-btn">Browse...</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Ask where to save each file</label>
+                            <p class="setting-description">Prompt for download location before each download</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="ask-download-location">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Behavior</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Show download progress notifications</label>
+                            <p class="setting-description">Display notifications for download progress</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="download-notifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Open downloads panel automatically</label>
+                            <p class="setting-description">Show download panel when a download starts</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="auto-open-downloads" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search Engine Section -->
+            <section id="section-search" class="settings-section">
+                <h2>Search Engine</h2>
+
+                <div class="setting-group">
+                    <h3>Default Search</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Default search engine</label>
+                            <p class="setting-description">Search engine used in the address bar</p>
+                        </div>
+                        <select id="default-search-engine">
+                            <option value="google">Google</option>
+                            <option value="bing">Bing</option>
+                            <option value="duckduckgo">DuckDuckGo</option>
+                            <option value="brave">Brave Search</option>
+                            <option value="startpage">Startpage</option>
+                            <option value="ecosia">Ecosia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Search Suggestions</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Show search suggestions</label>
+                            <p class="setting-description">Get search suggestions as you type</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="search-suggestions" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Show history suggestions</label>
+                            <p class="setting-description">Suggest URLs from your browsing history</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="history-suggestions" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Show bookmark suggestions</label>
+                            <p class="setting-description">Suggest URLs from your bookmarks</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="bookmark-suggestions" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Keyboard Shortcuts Section -->
+            <section id="section-shortcuts" class="settings-section">
+                <h2>Keyboard Shortcuts</h2>
+
+                <div class="setting-group">
+                    <h3>Navigation</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">New tab</span>
+                            <span class="shortcut-keys">Ctrl + T</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Close tab</span>
+                            <span class="shortcut-keys">Ctrl + W</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Reopen closed tab</span>
+                            <span class="shortcut-keys">Ctrl + Shift + T</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">New incognito window</span>
+                            <span class="shortcut-keys">Ctrl + Shift + N</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Focus address bar</span>
+                            <span class="shortcut-keys">Ctrl + L / F6</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Go back</span>
+                            <span class="shortcut-keys">Alt + ←</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Go forward</span>
+                            <span class="shortcut-keys">Alt + →</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Page Actions</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Reload page</span>
+                            <span class="shortcut-keys">Ctrl + R / F5</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Hard reload</span>
+                            <span class="shortcut-keys">Ctrl + Shift + R</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Find in page</span>
+                            <span class="shortcut-keys">Ctrl + F</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Zoom in</span>
+                            <span class="shortcut-keys">Ctrl + +</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Zoom out</span>
+                            <span class="shortcut-keys">Ctrl + -</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Reset zoom</span>
+                            <span class="shortcut-keys">Ctrl + 0</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Toggle fullscreen</span>
+                            <span class="shortcut-keys">F11</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Developer</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">Open Developer Tools</span>
+                            <span class="shortcut-keys">Ctrl + Shift + I / F12</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="shortcut-action">View page source</span>
+                            <span class="shortcut-keys">Ctrl + U</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="section-about" class="settings-section">
+                <h2>About Aegis Browser</h2>
+
+                <div class="about-content">
+                    <div class="about-logo">🛡️</div>
+                    <h3>Aegis Browser</h3>
+                    <p class="version">Version 1.0.0</p>
+                    <p class="tagline">Privacy-focused browsing with powerful ad blocking</p>
+
+                    <div class="about-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Electron:</span>
+                            <span class="detail-value" id="electron-version"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Chromium:</span>
+                            <span class="detail-value" id="chromium-version"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Node.js:</span>
+                            <span class="detail-value" id="node-version"></span>
+                        </div>
+                    </div>
+
+                    <div class="about-features">
+                        <h4>Features</h4>
+                        <ul>
+                            <li>🚫 Advanced ad blocking with 500+ domain filters</li>
+                            <li>🔒 Anti-fingerprinting protection</li>
+                            <li>🕵️ Incognito mode with no persistent data</li>
+                            <li>📥 Built-in download manager</li>
+                            <li>🎬 Video grabber for media downloads</li>
+                            <li>🖼️ Picture-in-Picture mini player</li>
+                            <li>⚡ Tab suspension for memory optimization</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-actions">
+                        <button id="check-updates" class="action-btn">Check for Updates</button>
+                        <button id="reset-settings" class="action-btn danger">Reset All Settings</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+
+    <script src="settings-app.js"></script>
+</body>
+
+</html>
