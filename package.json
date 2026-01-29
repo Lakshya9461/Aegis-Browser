@@ -5,9 +5,14 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --dev"
+    "start:linux": "electron . --no-sandbox",
+    "dev": "electron . --dev",
+    "dev:linux": "electron . --dev --no-sandbox"
   },
-  "keywords": ["electron", "browser"],
+  "keywords": [
+    "electron",
+    "browser"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {

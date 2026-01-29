@@ -47,6 +47,11 @@
    npm start
    ```
 
+   **On Linux (if you encounter sandbox errors):**
+   ```sh
+   npm run start:linux
+   ```
+
 ---
 
 ## Usage
