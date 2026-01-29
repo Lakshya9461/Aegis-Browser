@@ -1961,17 +1961,7 @@ const adUrlPatterns = [
     /\/skin.*ad/i,
 ];
 
-// Resource types typically used for ads
-const adResourceTypes = [
-    'script',
-    'image',
-    'stylesheet',
-    'xhr',
-    'fetch',
-    'sub_frame',
-    'ping',
-    'beacon'
-];
+
 
 class AdBlocker {
     constructor() {
@@ -2006,6 +1996,11 @@ class AdBlocker {
         this.addToWhitelist('ecosia.org');
         this.addToWhitelist('qwant.com');
         this.addToWhitelist('bing.com'); // Main Bing domain for search
+
+        // AI Tools
+        this.addToWhitelist('openai.com');
+        this.addToWhitelist('chatgpt.com');
+        this.addToWhitelist('auth0.com'); // Often used for login
 
         // Manga/Comic reading sites - content images should not be blocked
         this.addToWhitelist('asura.gg');

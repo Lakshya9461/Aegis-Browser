@@ -183,21 +183,29 @@ function setupAdBlockForSession(ses) {
         if (details.resourceType === 'image' || details.resourceType === 'stylesheet' ||
             details.resourceType === 'font' || details.resourceType === 'media') {
 
-            // Extract the origin from the URL being requested
-            try {
-                const url = new URL(details.url);
-                const origin = url.origin;
+            // Check if it's a known manga/comic site or CDN that needs header spoofing
+            const needSpoofing = [
+                'toonclash.com', 'asura.gg', 'asurascans.com', 'manhuaus.com',
+                'imgur.com', 'i.imgur.com'
+            ].some(domain => details.url.includes(domain));
 
-                // Spoof Referer to match the request's own origin (bypass hotlink protection)
-                requestHeaders['Referer'] = origin + '/';
-                requestHeaders['Origin'] = origin;
+            if (needSpoofing) {
+                // Extract the origin from the URL being requested
+                try {
+                    const url = new URL(details.url);
+                    const origin = url.origin;
 
-                // Set Sec-Fetch headers to appear as same-origin
-                requestHeaders['Sec-Fetch-Site'] = 'same-origin';
-                requestHeaders['Sec-Fetch-Mode'] = 'no-cors';
-                requestHeaders['Sec-Fetch-Dest'] = details.resourceType;
-            } catch (e) {
-                // If URL parsing fails, just continue with original headers
+                    // Spoof Referer to match the request's own origin (bypass hotlink protection)
+                    requestHeaders['Referer'] = origin + '/';
+                    requestHeaders['Origin'] = origin;
+
+                    // Set Sec-Fetch headers to appear as same-origin
+                    requestHeaders['Sec-Fetch-Site'] = 'same-origin';
+                    requestHeaders['Sec-Fetch-Mode'] = 'no-cors';
+                    requestHeaders['Sec-Fetch-Dest'] = details.resourceType;
+                } catch (e) {
+                    // If URL parsing fails, just continue with original headers
+                }
             }
         }
 

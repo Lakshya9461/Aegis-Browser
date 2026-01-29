@@ -191,7 +191,7 @@ function createTab(url, title = 'New Tab') {
     if (!url) {
         // Check if user has a custom newtab URL set, otherwise use our homepage
         const customUrl = currentSettings.newtabUrl;
-        if (customUrl && customUrl !== '' && customUrl !== 'aegis://newtab' && !customUrl.includes('google.com')) {
+        if (customUrl && customUrl !== 'aegis://newtab' && !customUrl.includes('google.com')) {
             url = customUrl;
         } else {
             // Use local newtab.html - get directory of current page
@@ -352,7 +352,7 @@ function setupTabDrag(tabId, tabEl) {
         // Set drag data
         const tab = tabs.find(t => t.id === tabId);
         const url = tab?.webview?.getURL?.() || tab?.webview?.src || '';
-        const title = tab?.title || 'New Tab';
+
 
         e.dataTransfer.setData('text/plain', url);
         e.dataTransfer.setData('application/x-tab-id', String(tabId));
@@ -624,8 +624,6 @@ function setupWebviewEvents(tabId, webview) {
                 div[id^="taboola-"], div[data-widget-type="taboola"],
                 div[class*="outbrain"], div[data-widget-type="outbrain"],
                 /* Generic ad patterns */
-                aside[id*="ad"], aside[class*="ad"],
-                section[id*="ad"], section[class*="ad"],
                 div[id*="advert"], div[class*="advert"],
                 div[id*="sponsor"], div[class*="sponsor"],
                 /* YouTube-specific ad blocking */
@@ -645,8 +643,6 @@ function setupWebviewEvents(tabId, webview) {
                 .ytp-ad-overlay-image,
                 .ytp-ad-overlay-ad-info-button-container,
                 .ytp-ad-overlay-ad-info-button,
-                div[id*="ad-"],
-                div[class*="ad-"],
                 div[id*="advertisement"],
                 div[class*="advertisement"] {
                     display: none !important;
@@ -888,7 +884,7 @@ if (httpsIndicator) {
         try {
             const urlObj = new URL(url);
             const protocol = urlObj.protocol;
-            const hostname = urlObj.hostname;
+
 
             if (protocol === 'https:') {
                 headerClass = 'secure';
