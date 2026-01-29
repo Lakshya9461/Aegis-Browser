@@ -697,6 +697,13 @@ body {
     accent-color: var(--accent);
 }
 
+.setting-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
 .settings-btn {
     width: 100%;
     padding: 12px;

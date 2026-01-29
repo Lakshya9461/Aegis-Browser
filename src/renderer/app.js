@@ -538,6 +538,28 @@ function setupWebviewEvents(tabId, webview) {
             // Webview might not be ready
         }
 
+        // Apply Font Size
+        if (currentSettings.fontSize) {
+            const fontSizes = {
+                'small': '14px',
+                'medium': '16px',
+                'large': '18px',
+                'x-large': '20px'
+            };
+            const size = fontSizes[currentSettings.fontSize] || '16px';
+            try {
+                webview.insertCSS(`html { font-size: ${size} !important; }`);
+            } catch (e) { }
+        }
+
+        // Apply Default Zoom
+        if (currentSettings.defaultZoom) {
+            const zoom = parseFloat(currentSettings.defaultZoom) || 1;
+            try {
+                webview.setZoomFactor(zoom);
+            } catch (e) { }
+        }
+
         // Inject ad-blocking CSS to hide Flash/banner elements
         if (adBlockEnabled) {
             webview.insertCSS(`
@@ -1331,6 +1353,34 @@ if (window.electronAPI && window.electronAPI.onAdBlocked) {
     });
 }
 
+// Listen for shortcuts from main process (e.g. context menu)
+if (window.electronAPI && window.electronAPI.onShortcut) {
+    window.electronAPI.onShortcut((action) => {
+        const webview = getActiveWebview();
+
+        switch (action) {
+            case 'new-tab':
+                createTab();
+                break;
+            case 'close-tab':
+                if (activeTabId) closeTab(activeTabId);
+                break;
+            case 'back':
+                if (webview && webview.canGoBack()) webview.goBack();
+                break;
+            case 'forward':
+                if (webview && webview.canGoForward()) webview.goForward();
+                break;
+            case 'reload':
+                if (webview) webview.reload();
+                break;
+            case 'devtools':
+                if (webview) webview.openDevTools();
+                break;
+        }
+    });
+}
+
 // Initialize ad blocker status
 initAdBlock();
 
@@ -1556,12 +1606,6 @@ async function renderHistory(searchQuery = '') {
 
         historyList.appendChild(groupEl);
     }
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 function showHistoryPanel() {

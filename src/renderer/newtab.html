@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: http:; font-src 'self' data:;">
     <title>New Tab - Aegis Browser</title>
     <link rel="stylesheet" href="newtab.css">
 </head>
@@ -169,6 +171,8 @@
                     </div>
                     <input type="text" id="bg-value" class="settings-input"
                         placeholder="Enter gradient or image URL...">
+                    <p class="setting-hint">💡 For images, use Unsplash, Imgur, or local file:/// URLs. Some sites block
+                        external image loading.</p>
                 </div>
 
                 <!-- Clock Settings -->

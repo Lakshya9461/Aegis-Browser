@@ -585,23 +585,36 @@ function initSettings() {
                 bgColorPicker.value = config.background.value;
             }
         } else {
+            // Show text input for gradient and image
             bgSolidOptions.classList.add('hidden');
             bgValue.classList.remove('hidden');
+
+            // Update placeholder based on type
+            if (bgType.value === 'gradient') {
+                bgValue.placeholder = 'Enter CSS gradient...';
+            } else if (bgType.value === 'image') {
+                bgValue.placeholder = 'Enter image URL (https://...)';
+            }
         }
     }
     updateBgOptions();
 
     bgType.addEventListener('change', () => {
         config.background.type = bgType.value;
-        // Reset value when switching types
+        // Reset value when switching types (but keep current value for image)
         if (bgType.value === 'solid') {
             config.background.value = bgColorPicker.value;
         } else if (bgType.value === 'gradient') {
-            config.background.value = 'linear-gradient(135deg, #0f0f1a 0%, #1a1a3a 50%, #0f1a2a 100%)';
+            if (!config.background.value || !config.background.value.includes('gradient')) {
+                config.background.value = 'linear-gradient(135deg, #0f0f1a 0%, #1a1a3a 50%, #0f1a2a 100%)';
+            }
             bgValue.value = config.background.value;
-        } else {
-            config.background.value = '';
-            bgValue.value = '';
+        } else if (bgType.value === 'image') {
+            // Don't reset image URL if it exists
+            if (!config.background.value || config.background.value.startsWith('#') || config.background.value.includes('gradient')) {
+                config.background.value = '';
+            }
+            bgValue.value = config.background.value;
         }
         updateBgOptions();
         saveConfig();

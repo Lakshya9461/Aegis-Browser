@@ -1051,6 +1051,124 @@ ipcMain.on('download-show-in-folder', (event, savePath) => {
     shell.showItemInFolder(savePath);
 });
 
+// Context Menu Handler
+ipcMain.on('show-context-menu', (event, params) => {
+    const { Menu } = require('electron');
+    const win = BrowserWindow.fromWebContents(event.sender);
+
+    const menuTemplate = [];
+
+    // Link context menu
+    if (params.linkURL) {
+        menuTemplate.push(
+            {
+                label: 'Open Link in New Tab',
+                click: () => {
+                    win.webContents.send('shortcut', 'new-tab');
+                    // Give the tab a moment to be created
+                    setTimeout(() => {
+                        win.webContents.send('open-url-in-new-tab', params.linkURL);
+                    }, 100);
+                }
+            },
+            {
+                label: 'Copy Link Address',
+                click: () => {
+                    clipboard.writeText(params.linkURL);
+                }
+            },
+            { type: 'separator' }
+        );
+    }
+
+    // Image context menu
+    if (params.mediaType === 'image' && params.srcURL) {
+        menuTemplate.push(
+            {
+                label: 'Save Image As...',
+                click: () => {
+                    win.webContents.downloadURL(params.srcURL);
+                }
+            },
+            {
+                label: 'Copy Image Address',
+                click: () => {
+                    clipboard.writeText(params.srcURL);
+                }
+            },
+            { type: 'separator' }
+        );
+    }
+
+    // Text selection context menu
+    if (params.selectionText) {
+        menuTemplate.push(
+            {
+                label: 'Copy',
+                role: 'copy'
+            },
+            { type: 'separator' }
+        );
+    }
+
+    // Editable field context menu
+    if (params.isEditable) {
+        menuTemplate.push(
+            {
+                label: 'Cut',
+                role: 'cut'
+            },
+            {
+                label: 'Copy',
+                role: 'copy'
+            },
+            {
+                label: 'Paste',
+                role: 'paste'
+            },
+            { type: 'separator' }
+        );
+    }
+
+    // Navigation options
+    menuTemplate.push(
+        {
+            label: 'Back',
+            enabled: params.canGoBack,
+            click: () => {
+                win.webContents.send('shortcut', 'back');
+            }
+        },
+        {
+            label: 'Forward',
+            enabled: params.canGoForward,
+            click: () => {
+                win.webContents.send('shortcut', 'forward');
+            }
+        },
+        {
+            label: 'Reload',
+            click: () => {
+                win.webContents.send('shortcut', 'reload');
+            }
+        },
+        { type: 'separator' }
+    );
+
+    // Developer Tools - THIS IS THE FIX
+    menuTemplate.push(
+        {
+            label: 'Inspect Element',
+            click: () => {
+                win.webContents.send('shortcut', 'devtools');
+            }
+        }
+    );
+
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    menu.popup({ window: win });
+});
+
 // Context Menu handler
 ipcMain.on('show-context-menu', (event, params) => {
     const menuItems = [];

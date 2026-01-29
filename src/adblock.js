@@ -2006,6 +2006,30 @@ class AdBlocker {
         this.addToWhitelist('ecosia.org');
         this.addToWhitelist('qwant.com');
         this.addToWhitelist('bing.com'); // Main Bing domain for search
+
+        // Manga/Comic reading sites - content images should not be blocked
+        this.addToWhitelist('asura.gg');
+        this.addToWhitelist('asurascans.com');
+        this.addToWhitelist('toonclash.com');
+        this.addToWhitelist('manhuaus.com');
+        this.addToWhitelist('mangadex.org');
+        this.addToWhitelist('webtoons.com');
+        this.addToWhitelist('tapas.io');
+        this.addToWhitelist('mangakakalot.com');
+        this.addToWhitelist('mangareader.to');
+        this.addToWhitelist('manganato.com');
+        this.addToWhitelist('readm.org');
+
+        // CDNs used by manga sites
+        this.addToWhitelist('imgur.com');
+        this.addToWhitelist('i.imgur.com');
+        this.addToWhitelist('cloudflare.com');
+        this.addToWhitelist('cf-images.com');
+        this.addToWhitelist('wp.com');
+        this.addToWhitelist('wp-content');
+        this.addToWhitelist('blogspot.com');
+        this.addToWhitelist('githubusercontent.com');
+        this.addToWhitelist('staticflickr.com');
     }
 
     /**
