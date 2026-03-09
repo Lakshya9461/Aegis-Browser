@@ -18,6 +18,7 @@ let activeTabId = null;
 let tabIdCounter = 0;
 let adBlockEnabled = true;
 let totalAdsBlocked = 0;
+let closedTabs = []; // Stack for reopening closed tabs
 
 // Settings Management
 let currentSettings = {};
@@ -182,6 +183,71 @@ if (window.electronAPI && window.electronAPI.onShortcut) {
             case 'show-clear-data':
                 showClearDataModal();
                 break;
+            case 'reopen-closed-tab':
+                if (closedTabs.length > 0) {
+                    const lastClosed = closedTabs.pop();
+                    createTab(lastClosed.url, lastClosed.title);
+                }
+                break;
+            case 'next-tab':
+                if (tabs.length > 1) {
+                    const currentIndex = tabs.findIndex(t => t.id === activeTabId);
+                    const nextIndex = (currentIndex + 1) % tabs.length;
+                    switchToTab(tabs[nextIndex].id);
+                }
+                break;
+            case 'prev-tab':
+                if (tabs.length > 1) {
+                    const currentIndex = tabs.findIndex(t => t.id === activeTabId);
+                    const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                    switchToTab(tabs[prevIndex].id);
+                }
+                break;
+            case 'zoom-in':
+                {
+                    const wvZoomIn = getActiveWebview();
+                    if (wvZoomIn) {
+                        const currentZoom = wvZoomIn.getZoomFactor();
+                        wvZoomIn.setZoomFactor(Math.min(currentZoom + 0.1, 3));
+                    }
+                }
+                break;
+            case 'zoom-out':
+                {
+                    const wvZoomOut = getActiveWebview();
+                    if (wvZoomOut) {
+                        const currentZoom = wvZoomOut.getZoomFactor();
+                        wvZoomOut.setZoomFactor(Math.max(currentZoom - 0.1, 0.3));
+                    }
+                }
+                break;
+            case 'zoom-reset':
+                {
+                    const wvZoomReset = getActiveWebview();
+                    if (wvZoomReset) wvZoomReset.setZoomFactor(1);
+                }
+                break;
+            case 'tab-1':
+            case 'tab-2':
+            case 'tab-3':
+            case 'tab-4':
+            case 'tab-5':
+            case 'tab-6':
+            case 'tab-7':
+            case 'tab-8':
+                {
+                    const tabNum = parseInt(action.split('-')[1]) - 1;
+                    if (tabNum < tabs.length) {
+                        switchToTab(tabs[tabNum].id);
+                    }
+                }
+                break;
+            case 'tab-9':
+                // Tab 9 switches to last tab
+                if (tabs.length > 0) {
+                    switchToTab(tabs[tabs.length - 1].id);
+                }
+                break;
         }
     });
 }
@@ -278,6 +344,15 @@ function closeTab(tabId) {
     if (tabIndex === -1) return;
 
     const tab = tabs[tabIndex];
+
+    // Save tab info for reopening later
+    const url = tab.webview?.getURL?.() || tab.webview?.src || '';
+    const title = tab.title || 'New Tab';
+    if (url && !url.includes('newtab.html')) {
+        closedTabs.push({ url, title });
+        // Keep only last 10 closed tabs
+        if (closedTabs.length > 10) closedTabs.shift();
+    }
 
     // Remove from DOM
     tab.tabEl.remove();
@@ -1349,33 +1424,8 @@ if (window.electronAPI && window.electronAPI.onAdBlocked) {
     });
 }
 
-// Listen for shortcuts from main process (e.g. context menu)
-if (window.electronAPI && window.electronAPI.onShortcut) {
-    window.electronAPI.onShortcut((action) => {
-        const webview = getActiveWebview();
-
-        switch (action) {
-            case 'new-tab':
-                createTab();
-                break;
-            case 'close-tab':
-                if (activeTabId) closeTab(activeTabId);
-                break;
-            case 'back':
-                if (webview && webview.canGoBack()) webview.goBack();
-                break;
-            case 'forward':
-                if (webview && webview.canGoForward()) webview.goForward();
-                break;
-            case 'reload':
-                if (webview) webview.reload();
-                break;
-            case 'devtools':
-                if (webview) webview.openDevTools();
-                break;
-        }
-    });
-}
+// NOTE: Shortcut listener is already registered at line ~132
+// Removed duplicate listener that was causing double execution of actions
 
 // Initialize ad blocker status
 initAdBlock();

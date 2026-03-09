@@ -597,6 +597,42 @@ function registerIncognitoShortcuts(win) {
     globalShortcut.register('CommandOrControl+Shift+N', () => {
         createIncognitoWindow();
     });
+
+    // Reopen closed tab
+    globalShortcut.register('CommandOrControl+Shift+T', () => {
+        win?.webContents.send('shortcut', 'reopen-closed-tab');
+    });
+
+    // Next tab
+    globalShortcut.register('CommandOrControl+Tab', () => {
+        win?.webContents.send('shortcut', 'next-tab');
+    });
+
+    // Previous tab
+    globalShortcut.register('CommandOrControl+Shift+Tab', () => {
+        win?.webContents.send('shortcut', 'prev-tab');
+    });
+
+    // Zoom
+    globalShortcut.register('CommandOrControl+Plus', () => {
+        win?.webContents.send('shortcut', 'zoom-in');
+    });
+    globalShortcut.register('CommandOrControl+=', () => {
+        win?.webContents.send('shortcut', 'zoom-in');
+    });
+    globalShortcut.register('CommandOrControl+-', () => {
+        win?.webContents.send('shortcut', 'zoom-out');
+    });
+    globalShortcut.register('CommandOrControl+0', () => {
+        win?.webContents.send('shortcut', 'zoom-reset');
+    });
+
+    // Tab switching by number (1-9)
+    for (let i = 1; i <= 9; i++) {
+        globalShortcut.register(`CommandOrControl+${i}`, () => {
+            win?.webContents.send('shortcut', `tab-${i}`);
+        });
+    }
 }
 
 function registerShortcuts() {
@@ -681,6 +717,46 @@ function registerShortcuts() {
     globalShortcut.register('CommandOrControl+Shift+N', () => {
         createIncognitoWindow();
     });
+
+    // Reopen closed tab
+    globalShortcut.register('CommandOrControl+Shift+T', () => {
+        mainWindow?.webContents.send('shortcut', 'reopen-closed-tab');
+    });
+
+    // Next tab
+    globalShortcut.register('CommandOrControl+Tab', () => {
+        mainWindow?.webContents.send('shortcut', 'next-tab');
+    });
+
+    // Previous tab
+    globalShortcut.register('CommandOrControl+Shift+Tab', () => {
+        mainWindow?.webContents.send('shortcut', 'prev-tab');
+    });
+
+    // Zoom in
+    globalShortcut.register('CommandOrControl+Plus', () => {
+        mainWindow?.webContents.send('shortcut', 'zoom-in');
+    });
+    globalShortcut.register('CommandOrControl+=', () => {
+        mainWindow?.webContents.send('shortcut', 'zoom-in');
+    });
+
+    // Zoom out
+    globalShortcut.register('CommandOrControl+-', () => {
+        mainWindow?.webContents.send('shortcut', 'zoom-out');
+    });
+
+    // Zoom reset
+    globalShortcut.register('CommandOrControl+0', () => {
+        mainWindow?.webContents.send('shortcut', 'zoom-reset');
+    });
+
+    // Tab switching by number (1-9)
+    for (let i = 1; i <= 9; i++) {
+        globalShortcut.register(`CommandOrControl+${i}`, () => {
+            mainWindow?.webContents.send('shortcut', `tab-${i}`);
+        });
+    }
 }
 
 // App lifecycle
@@ -1059,133 +1135,18 @@ ipcMain.on('download-show-in-folder', (event, savePath) => {
     shell.showItemInFolder(savePath);
 });
 
-// Context Menu Handler
+// Context Menu handler (consolidated - supports all windows including incognito)
 ipcMain.on('show-context-menu', (event, params) => {
-    const { Menu } = require('electron');
     const win = BrowserWindow.fromWebContents(event.sender);
-
-    const menuTemplate = [];
-
-    // Link context menu
-    if (params.linkURL) {
-        menuTemplate.push(
-            {
-                label: 'Open Link in New Tab',
-                click: () => {
-                    win.webContents.send('shortcut', 'new-tab');
-                    // Give the tab a moment to be created
-                    setTimeout(() => {
-                        win.webContents.send('open-url-in-new-tab', params.linkURL);
-                    }, 100);
-                }
-            },
-            {
-                label: 'Copy Link Address',
-                click: () => {
-                    clipboard.writeText(params.linkURL);
-                }
-            },
-            { type: 'separator' }
-        );
-    }
-
-    // Image context menu
-    if (params.mediaType === 'image' && params.srcURL) {
-        menuTemplate.push(
-            {
-                label: 'Save Image As...',
-                click: () => {
-                    win.webContents.downloadURL(params.srcURL);
-                }
-            },
-            {
-                label: 'Copy Image Address',
-                click: () => {
-                    clipboard.writeText(params.srcURL);
-                }
-            },
-            { type: 'separator' }
-        );
-    }
-
-    // Text selection context menu
-    if (params.selectionText) {
-        menuTemplate.push(
-            {
-                label: 'Copy',
-                role: 'copy'
-            },
-            { type: 'separator' }
-        );
-    }
-
-    // Editable field context menu
-    if (params.isEditable) {
-        menuTemplate.push(
-            {
-                label: 'Cut',
-                role: 'cut'
-            },
-            {
-                label: 'Copy',
-                role: 'copy'
-            },
-            {
-                label: 'Paste',
-                role: 'paste'
-            },
-            { type: 'separator' }
-        );
-    }
-
-    // Navigation options
-    menuTemplate.push(
-        {
-            label: 'Back',
-            enabled: params.canGoBack,
-            click: () => {
-                win.webContents.send('shortcut', 'back');
-            }
-        },
-        {
-            label: 'Forward',
-            enabled: params.canGoForward,
-            click: () => {
-                win.webContents.send('shortcut', 'forward');
-            }
-        },
-        {
-            label: 'Reload',
-            click: () => {
-                win.webContents.send('shortcut', 'reload');
-            }
-        },
-        { type: 'separator' }
-    );
-
-    // Developer Tools - THIS IS THE FIX
-    menuTemplate.push(
-        {
-            label: 'Inspect Element',
-            click: () => {
-                win.webContents.send('shortcut', 'devtools');
-            }
-        }
-    );
-
-    const menu = Menu.buildFromTemplate(menuTemplate);
-    menu.popup({ window: win });
-});
-
-// Context Menu handler
-ipcMain.on('show-context-menu', (event, params) => {
+    if (!win) return;
+    
     const menuItems = [];
 
     // Link actions
     if (params.linkURL) {
         menuItems.push({
             label: 'Open Link in New Tab',
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'open-link-new-tab', url: params.linkURL })
+            click: () => win.webContents.send('context-menu-action', { action: 'open-link-new-tab', url: params.linkURL })
         });
         menuItems.push({
             label: 'Copy Link Address',
@@ -1198,11 +1159,11 @@ ipcMain.on('show-context-menu', (event, params) => {
     if (params.mediaType === 'image' && params.srcURL) {
         menuItems.push({
             label: 'Open Image in New Tab',
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'open-image-new-tab', url: params.srcURL })
+            click: () => win.webContents.send('context-menu-action', { action: 'open-image-new-tab', url: params.srcURL })
         });
         menuItems.push({
             label: 'Save Image As...',
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'save-image', url: params.srcURL })
+            click: () => win.webContents.send('context-menu-action', { action: 'save-image', url: params.srcURL })
         });
         menuItems.push({
             label: 'Copy Image Address',
@@ -1216,11 +1177,11 @@ ipcMain.on('show-context-menu', (event, params) => {
         menuItems.push({
             label: 'Copy',
             accelerator: 'CmdOrCtrl+C',
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'copy' })
+            click: () => win.webContents.send('context-menu-action', { action: 'copy' })
         });
         menuItems.push({
             label: `Search Google for "${params.selectionText.substring(0, 30)}${params.selectionText.length > 30 ? '...' : ''}"`,
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'search-selection', text: params.selectionText })
+            click: () => win.webContents.send('context-menu-action', { action: 'search-selection', text: params.selectionText })
         });
         menuItems.push({ type: 'separator' });
     }
@@ -1232,24 +1193,24 @@ ipcMain.on('show-context-menu', (event, params) => {
                 label: 'Cut',
                 accelerator: 'CmdOrCtrl+X',
                 enabled: !!params.selectionText,
-                click: () => mainWindow?.webContents.send('context-menu-action', { action: 'cut' })
+                click: () => win.webContents.send('context-menu-action', { action: 'cut' })
             });
             menuItems.push({
                 label: 'Copy',
                 accelerator: 'CmdOrCtrl+C',
                 enabled: !!params.selectionText,
-                click: () => mainWindow?.webContents.send('context-menu-action', { action: 'copy' })
+                click: () => win.webContents.send('context-menu-action', { action: 'copy' })
             });
         }
         menuItems.push({
             label: 'Paste',
             accelerator: 'CmdOrCtrl+V',
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'paste' })
+            click: () => win.webContents.send('context-menu-action', { action: 'paste' })
         });
         menuItems.push({
             label: 'Select All',
             accelerator: 'CmdOrCtrl+A',
-            click: () => mainWindow?.webContents.send('context-menu-action', { action: 'select-all' })
+            click: () => win.webContents.send('context-menu-action', { action: 'select-all' })
         });
         menuItems.push({ type: 'separator' });
     }
@@ -1258,30 +1219,30 @@ ipcMain.on('show-context-menu', (event, params) => {
     menuItems.push({
         label: 'Back',
         enabled: params.canGoBack,
-        click: () => mainWindow?.webContents.send('context-menu-action', { action: 'back' })
+        click: () => win.webContents.send('context-menu-action', { action: 'back' })
     });
     menuItems.push({
         label: 'Forward',
         enabled: params.canGoForward,
-        click: () => mainWindow?.webContents.send('context-menu-action', { action: 'forward' })
+        click: () => win.webContents.send('context-menu-action', { action: 'forward' })
     });
     menuItems.push({
         label: 'Reload',
         accelerator: 'CmdOrCtrl+R',
-        click: () => mainWindow?.webContents.send('context-menu-action', { action: 'reload' })
+        click: () => win.webContents.send('context-menu-action', { action: 'reload' })
     });
     menuItems.push({ type: 'separator' });
     menuItems.push({
         label: 'View Page Source',
-        click: () => mainWindow?.webContents.send('context-menu-action', { action: 'view-source', url: params.pageURL })
+        click: () => win.webContents.send('context-menu-action', { action: 'view-source', url: params.pageURL })
     });
     menuItems.push({
         label: 'Inspect Element',
-        click: () => mainWindow?.webContents.send('context-menu-action', { action: 'inspect', x: params.x, y: params.y })
+        click: () => win.webContents.send('context-menu-action', { action: 'inspect', x: params.x, y: params.y })
     });
 
     const menu = Menu.buildFromTemplate(menuItems);
-    menu.popup({ window: mainWindow });
+    menu.popup({ window: win });
 });
 
 // Open incognito window from menu
